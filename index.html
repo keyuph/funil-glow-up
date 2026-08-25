@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Rotina e Hábitos</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+        :root {
+            /* Paleta Clean Girl / Boutique */
+            --bg-main: #F3EFE6; /* Fundo Areia */
+            --text-primary: #4A3F35; /* Marrom Espresso */
+            --btn-bg: #4A3F35;
+            --btn-text: #F3EFE6;
+            --card-bg: #FFFFFF;
+            --alert-border: #8B0000; /* Vermelho fechado para o alerta */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        h1 { font-size: 2.1rem; }
+        h2 { font-size: 1.6rem; margin-top: 1rem; }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .btn-main {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1.2rem;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .btn-main:hover {
+            opacity: 0.85;
+        }
+
+        .option-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--text-primary);
+            color: var(--text-primary);
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Sombra quase invisível para destacar o card branco */
+        }
+
+        .option-card.selected {
+            border-width: 2px;
+            background-color: #FAFAFA;
+            padding: calc(1.2rem - 1px); /* Compensa a borda para não mover o texto */
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 2px;
+            background-color: rgba(74, 63, 53, 0.15);
+            border-radius: 2px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--text-primary);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        .step {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .step.active {
+            display: flex;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(74, 63, 53, 0.2);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert-card {
+            border: 1px solid var(--alert-border);
+            color: var(--alert-border);
+            background-color: transparent;
+            padding: 0.8rem 1.2rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .step-8-content p {
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .btn-cta {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 1.3rem;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            display: inline-block;
+            box-shadow: 0 4px 14px rgba(74, 63, 53, 0.2);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(74, 63, 53, 0.3);
+            background-color: #382F26;
+        }
+
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 14px rgba(74, 63, 53, 0.2);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 6px 20px rgba(74, 63, 53, 0.35);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 14px rgba(74, 63, 53, 0.2);
+            }
+        }
+
+        .footer-note {
+            display: block;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-weight: 500;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <section class="step active fade-in" id="step-1">
+            <span class="subtitle">Ferramenta de Diagnóstico</span>
+            <h1>Descubra o bloqueio invisível que está travando a sua evolução.</h1>
+            <p>Faça o teste de 60 segundos com a influenciadora e descubra por que você se sente estagnada e como ativar a sua melhor versão.</p>
+            <button class="btn-main" onclick="nextStep(1, 2)">Iniciar Diagnóstico Gratuito &rarr;</button>
+            <span class="footer-note" style="margin-top: 2rem;">🔒 Informações 100% confidenciais.</span>
+        </section>
+
+        <section class="step" id="step-2">
+            <div class="progress-bar-container">
+                <span class="progress-text">Passo 1 de 5</span>
+                <div class="progress-track"><div class="progress-fill" style="width: 20%;"></div></div>
+            </div>
+            <h2>Como você descreve o seu momento atual?</h2>
+            <div>
+                <button class="option-card" onclick="selectOption(this, 2, 3)">Me sinto estagnada e sem brilho</button>
+                <button class="option-card" onclick="selectOption(this, 2, 3)">Começo hábitos novos mas logo desisto</button>
+                <button class="option-card" onclick="selectOption(this, 2, 3)">Minha rotina é caótica e sem tempo para mim</button>
+                <button class="option-card" onclick="selectOption(this, 2, 3)">Falta clareza de por onde começar</button>
+            </div>
+        </section>
+
+        <section class="step" id="step-3">
+            <div class="progress-bar-container">
+                <span class="progress-text">Passo 2 de 5</span>
+                <div class="progress-track"><div class="progress-fill" style="width: 40%;"></div></div>
+            </div>
+            <h2>Qual é o seu maior obstáculo para cuidar de si mesma?</h2>
+            <div>
+                <button class="option-card" onclick="selectOption(this, 3, 4)">Cansaço extremo no fim do dia</button>
+                <button class="option-card" onclick="selectOption(this, 3, 4)">Autossabotagem constante</button>
+                <button class="option-card" onclick="selectOption(this, 3, 4)">Excesso de informações e dietas complexas</button>
+                <button class="option-card" onclick="selectOption(this, 3, 4)">Falta de disciplina</button>
+            </div>
+        </section>
+
+        <section class="step" id="step-4">
+            <div class="progress-bar-container">
+                <span class="progress-text">Passo 3 de 5</span>
+                <div class="progress-track"><div class="progress-fill" style="width: 60%;"></div></div>
+            </div>
+            <h2>O que mais te incomoda quando pensa na sua rotina?</h2>
+            <div>
+                <button class="option-card" onclick="selectOption(this, 4, 5)">Acordar já me sentindo exausta</button>
+                <button class="option-card" onclick="selectOption(this, 4, 5)">Olhar no espelho e não me reconhecer</button>
+                <button class="option-card" onclick="selectOption(this, 4, 5)">A sensação de não estar evoluindo</button>
+                <button class="option-card" onclick="selectOption(this, 4, 5)">A falta de organização pessoal</button>
+            </div>
+        </section>
+
+        <section class="step" id="step-5">
+            <div class="progress-bar-container">
+                <span class="progress-text">Passo 4 de 5</span>
+                <div class="progress-track"><div class="progress-fill" style="width: 80%;"></div></div>
+            </div>
+            <h2>Como está o seu nível de energia?</h2>
+            <div>
+                <button class="option-card" onclick="selectOption(this, 5, 6)">Baixo o dia todo</button>
+                <button class="option-card" onclick="selectOption(this, 5, 6)">Tenho picos de ansiedade e depois desânimo</button>
+                <button class="option-card" onclick="selectOption(this, 5, 6)">Dependo de café e doces para funcionar</button>
+                <button class="option-card" onclick="selectOption(this, 5, 6)">Razoável, mas poderia ser melhor</button>
+            </div>
+        </section>
+
+        <section class="step" id="step-6">
+            <div class="progress-bar-container">
+                <span class="progress-text">Passo 5 de 5</span>
+                <div class="progress-track"><div class="progress-fill" style="width: 100%;"></div></div>
+            </div>
+            <h2>Qual a sua urgência em transformar seus hábitos e viver o seu Glow Up?</h2>
+            <div>
+                <button class="option-card" onclick="selectOption(this, 6, 7)">Preciso de uma mudança rápida agora</button>
+                <button class="option-card" onclick="selectOption(this, 6, 7)">Quero construir isso de forma gradual nas próximas semanas</button>
+                <button class="option-card" onclick="selectOption(this, 6, 7)">Estou apenas curiosa, sem pressa</button>
+            </div>
+        </section>
+
+        <section class="step" id="step-7">
+            <div style="margin: auto 0;">
+                <div class="spinner"></div>
+                <h2 style="font-size: 1.2rem;">Analisando sua rotina... Identificando bloqueios de hábitos...</h2>
+            </div>
+        </section>
+
+        <section class="step" id="step-8">
+            <div>
+                <div class="alert-card">
+                    ⚠️ Alerta de Estagnação Detectado
+                </div>
+            </div>
+            <h2>Diagnóstico Concluído: O Ciclo da Estagnação.</h2>
+            
+            <div class="text-left step-8-content">
+                <p>Analisamos as suas respostas. Aquela sensação de frustração por tentar mudar e não conseguir, ou o cansaço que te impede de cuidar de si mesma, <strong>não é preguiça nem falta de capacidade</strong>.</p>
+                <p>Você está presa no <strong>Ciclo da Estagnação</strong>.</p>
+                <p>É um padrão onde a falta de uma rotina clara drena a sua energia e destrói a sua disciplina diária. É por isso que motivação não basta. Tentar mudar tudo de uma vez só gera ansiedade e autossabotagem.</p>
+                <p>Para romper esse ciclo, você precisa de um passo a passo desenhado para a vida real. É exatamente isso que o <strong>Protocolo Glow Up</strong> entrega. Um guia prático para resetar seus hábitos, blindar sua rotina e construir a sua melhor versão de forma leve, organizada e definitiva.</p>
+            </div>
+            
+            <a href="https://pay.hotmart.com/I107137616R?checkoutMode=10" class="btn-cta pulse-effect" target="_blank" rel="noopener noreferrer">QUERO VIVER MEU GLOW UP AGORA &rarr;</a>
+            <span class="footer-note">Acesso imediato e seguro - Risco Zero.</span>
+        </section>
+
+    </div>
+
+    <script>
+        function nextStep(current, next) {
+            // Remove a exibição da etapa atual
+            const currentStep = document.getElementById('step-' + current);
+            currentStep.classList.remove('active', 'fade-in');
+
+            // Exibe a próxima etapa e dispara a animação
+            const nextStepObj = document.getElementById('step-' + next);
+            nextStepObj.classList.add('active', 'fade-in');
+            
+            // Retorna ao topo suavemente ao trocar de tela, crucial para mobile
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Lógica para a tela de Loading (Tela 7 avança para a 8 sozinha)
+            if (next === 7) {
+                setTimeout(() => {
+                    nextStep(7, 8);
+                }, 2500); // Aguarda 2.5s simulando análise
+            }
+        }
+
+        function selectOption(btnElement, currentStepNum, nextStepNum) {
+            // Remove as seleções anteriores (previne duplo clique visual rápido)
+            const siblings = btnElement.parentElement.querySelectorAll('.option-card');
+            siblings.forEach(btn => btn.classList.remove('selected'));
+
+            // Aplica visual de feedback no botão clicado
+            btnElement.classList.add('selected');
+
+            // Aguarda 300ms antes de avançar, dando tempo do usuário ler e processar o clique
+            setTimeout(() => {
+                nextStep(currentStepNum, nextStepNum);
+            }, 300);
+        }
+    </script>
+</body>
+</html>
