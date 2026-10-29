@@ -362,13 +362,22 @@
                 <p>Para romper esse ciclo, você precisa de um passo a passo desenhado para a vida real. É exatamente isso que o <strong>Protocolo Glow Up</strong> entrega. Um guia prático para resetar seus hábitos, blindar sua rotina e construir a sua melhor versão de forma leve, organizada e definitiva.</p>
             </div>
             
-            <a href="https://pay.hotmart.com/I107137616R?checkoutMode=10" class="btn-cta pulse-effect" target="_blank" rel="noopener noreferrer">QUERO VIVER MEU GLOW UP AGORA &rarr;</a>
-            <span class="footer-note">Acesso imediato e seguro - Risco Zero.</span>
+            <a id="checkout-cta" href="https://pay.kirvano.com/71cf6944-ce74-4922-b908-9f548ced1090" class="btn-cta pulse-effect" target="_blank" rel="noopener noreferrer">QUERO VIVER MEU GLOW UP AGORA &rarr;</a>
+            <span class="footer-note">Acesso imediato ao Aplicativo 21 Dias • Compra 100% Segura.</span>
         </section>
 
     </div>
 
     <script>
+        // Propaga parâmetros UTM de anúncios (Meta/TikTok/Instagram) para o checkout da Kirvano
+        (function () {
+            const cta = document.getElementById('checkout-cta');
+            if (cta && window.location.search) {
+                const base = cta.getAttribute('href');
+                const sep = base.includes('?') ? '&' : '?';
+                cta.setAttribute('href', base + sep + window.location.search.slice(1));
+            }
+        })();
         function nextStep(current, next) {
             // Remove a exibição da etapa atual
             const currentStep = document.getElementById('step-' + current);
